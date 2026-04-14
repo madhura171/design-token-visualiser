@@ -21,25 +21,36 @@ export function Footer() {
       }}
     >
       <div
-        className="footer-row"
+        className="footer-row bar-inner-padding"
         style={{
           maxWidth: 1120,
           margin: '0 auto',
-          paddingLeft: 40,
-          paddingRight: 40,
+          paddingLeft: 48,
+          paddingRight: 48,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <p style={{ color: '#6B7280', fontSize: 13, fontFamily: 'var(--font-sans)', margin: 0 }}>
-            &copy; 2026 Design Token Visualiser
-          </p>
-          <p style={{ color: '#4B5563', fontSize: 12, fontFamily: 'var(--font-sans)', margin: 0 }}>
-            Made to learn, made to share
-          </p>
-        </div>
+        <p style={{ color: '#6B7280', fontSize: 13, fontFamily: 'var(--font-sans)', margin: 0 }}>
+          &copy; 2026 Design Token Visualiser · A mini project made with love by{' '}
+          <a
+            href="https://www.linkedin.com/in/madhura-patgavkar"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: hovered === 'author' ? '#FFFFFF' : '#9CA3AF',
+              textDecoration: 'underline',
+              textDecorationColor: 'rgba(156,163,175,0.4)',
+              textUnderlineOffset: 3,
+              transition: 'color 150ms ease',
+            }}
+            onMouseEnter={() => setHovered('author')}
+            onMouseLeave={() => setHovered(null)}
+          >
+            Madhura Patgavkar
+          </a>
+        </p>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           {iconLinks.map(({ id, href, Icon, label }) => (
@@ -50,7 +61,7 @@ export function Footer() {
               rel="noopener noreferrer"
               aria-label={label}
               style={{
-                color: hovered === id ? '#FFFFFF' : '#71717A',
+                color: hovered === id ? '#FFFFFF' : '#6B7280',
                 transition: 'color 150ms ease',
                 display: 'flex',
                 alignItems: 'center',

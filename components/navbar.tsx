@@ -56,10 +56,11 @@ export function Navbar({ variant, onLogoClick }: NavbarProps) {
       }}
     >
       <div
+        className="bar-inner-padding"
         style={{
           width: '100%',
-          paddingLeft: 40,
-          paddingRight: 40,
+          paddingLeft: 48,
+          paddingRight: 48,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -98,7 +99,7 @@ export function Navbar({ variant, onLogoClick }: NavbarProps) {
         </div>
 
         {variant === 'full' ? (
-          <nav aria-label="Site navigation" className="hidden sm:block">
+          <nav aria-label="Site navigation" className="" style={{ display:'flex' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
               {navLinks.map((link) => (
                 <a

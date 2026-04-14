@@ -85,25 +85,6 @@ type ErrorKind  = 'not-json' | 'no-tokens' | 'parse-error' | null
 
 const PDF_ELEMENT_ID = 'token-output'
 
-// Dot-grid background layer for loading/visual states only.
-function DotGridBg() {
-  return (
-    <div
-      aria-hidden="true"
-      style={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px)',
-        backgroundSize: '24px 24px',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
-        maskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
-      }}
-    />
-  )
-}
-
 export default function Home() {
   const [appState, setAppState]       = useState<AppState>('upload')
   const [tokens, setTokens]           = useState<ParsedTokens | null>(null)
@@ -336,128 +317,137 @@ export default function Home() {
       <main>
         {/* ── Upload state ───────────────────────────────────────────── */}
         {appState === 'upload' && (
-          <div style={{ paddingTop: 60 }}>
-            <UploadZone onFile={handleFile} onError={handleError} />
+          <div style={{ position:'relative', minHeight:'100vh', backgroundColor:'#0A0A0A', overflow:'hidden' }}>
+            <div className="dot-grid-bg" />
+            <div style={{ position:'relative', zIndex:1 }}>
+              <div style={{ paddingTop: 60 }}>
+              <UploadZone onFile={handleFile} onError={handleError} />
 
-            {/* Error pills */}
-            {errorKind && (
-              <div className="mx-auto max-w-xl px-6 -mt-12 pb-12 flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
-                {errorKind === 'not-json' && (
-                  <div
-                    className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
-                    style={{
-                      background: 'rgba(239,68,68,0.08)',
-                      border: '1px solid rgba(239,68,68,0.2)',
-                      color: '#EF4444',
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                    role="alert"
-                  >
-                    <AlertCircle size={14} aria-hidden="true" />
-                    {"That's not a JSON file. Please upload a valid .json token file."}
-                  </div>
-                )}
-                {errorKind === 'no-tokens' && (
-                  <div
-                    className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
-                    style={{
-                      background: 'rgba(245,158,11,0.08)',
-                      border: '1px solid rgba(245,158,11,0.2)',
-                      color: '#F59E0B',
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                    role="alert"
-                  >
-                    <AlertTriangle size={14} aria-hidden="true" />
-                    {"We couldn't find any design tokens in this file. Check it uses W3C or Figma Tokens format."}
-                  </div>
-                )}
-                {errorKind === 'parse-error' && (
-                  <div
-                    className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
-                    style={{
-                      background: 'rgba(239,68,68,0.08)',
-                      border: '1px solid rgba(239,68,68,0.2)',
-                      color: '#EF4444',
-                      fontFamily: 'var(--font-sans)',
-                    }}
-                    role="alert"
-                  >
-                    <AlertCircle size={14} aria-hidden="true" />
-                    {errorMsg ?? 'Failed to parse the file.'}
-                  </div>
-                )}
+              {/* Error pills */}
+              {errorKind && (
+                <div className="mx-auto max-w-xl px-6 -mt-12 pb-12 flex justify-center" style={{ position: 'relative', zIndex: 2 }}>
+                  {errorKind === 'not-json' && (
+                    <div
+                      className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+                      style={{
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#EF4444',
+                        fontFamily: 'var(--font-sans)',
+                      }}
+                      role="alert"
+                    >
+                      <AlertCircle size={14} aria-hidden="true" />
+                      {"That's not a JSON file. Please upload a valid .json token file."}
+                    </div>
+                  )}
+                  {errorKind === 'no-tokens' && (
+                    <div
+                      className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+                      style={{
+                        background: 'rgba(245,158,11,0.08)',
+                        border: '1px solid rgba(245,158,11,0.2)',
+                        color: '#F59E0B',
+                        fontFamily: 'var(--font-sans)',
+                      }}
+                      role="alert"
+                    >
+                      <AlertTriangle size={14} aria-hidden="true" />
+                      {"We couldn't find any design tokens in this file. Check it uses W3C or Figma Tokens format."}
+                    </div>
+                  )}
+                  {errorKind === 'parse-error' && (
+                    <div
+                      className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+                      style={{
+                        background: 'rgba(239,68,68,0.08)',
+                        border: '1px solid rgba(239,68,68,0.2)',
+                        color: '#EF4444',
+                        fontFamily: 'var(--font-sans)',
+                      }}
+                      role="alert"
+                    >
+                      <AlertCircle size={14} aria-hidden="true" />
+                      {errorMsg ?? 'Failed to parse the file.'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <Footer />
               </div>
-            )}
-
-            <Footer />
+            </div>
           </div>
         )}
 
         {/* ── Loading state ──────────────────────────────────────────── */}
         {appState === 'loading' && (
-          <div style={{ paddingTop: 60, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
-              <DotGridBg />
-              <div
-                style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minHeight: 'calc(100vh - 60px)',
-                  padding: '24px',
-                }}
-              >
-                <div style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+          <div style={{ position:'relative', minHeight:'100vh', backgroundColor:'#0A0A0A', overflow:'hidden' }}>
+            <div className="dot-grid-bg" />
+            <div style={{ position:'relative', zIndex:1 }}>
+              <div style={{ paddingTop: 60, display: 'flex', flexDirection: 'column' }}>
+              <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
+                <div
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 'calc(100vh - 60px)',
+                    padding: '24px',
+                  }}
+                >
+                  <div style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
 
-                  <p
-                    style={{
-                      fontSize: 72,
-                      fontWeight: 800,
-                      fontFamily: "'JetBrains Mono', monospace",
-                      letterSpacing: '-0.03em',
-                      color: '#FFFFFF',
-                      lineHeight: 1,
-                      margin: 0,
-                    }}
-                    aria-live="polite"
-                    aria-label={`Loading ${Math.floor(progress)} percent`}
-                  >
-                    {Math.floor(progress)}%
-                  </p>
-
-                  <p
-                    key={statusLabel}
-                    className="animate-fade-in-up"
-                    style={{ color: '#9CA3AF', fontSize: 14, fontFamily: 'var(--font-sans)', textAlign: 'center', margin: 0 }}
-                  >
-                    {statusLabel}
-                  </p>
-
-                  <div
-                    style={{ width: '100%', height: 4, borderRadius: 2, background: '#1F1F1F' }}
-                    role="progressbar"
-                    aria-valuenow={Math.floor(progress)}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-label="File processing progress"
-                  >
-                    <div
+                    <p
                       style={{
-                        width: `${progress}%`,
-                        height: '100%',
-                        borderRadius: 2,
-                        background: 'linear-gradient(90deg, #6366F1, #818CF8)',
-                        boxShadow: '0 0 12px rgba(99,102,241,0.6)',
-                        transition: 'none',
+                        fontSize: 72,
+                        fontWeight: 800,
+                        fontFamily: "'JetBrains Mono', monospace",
+                        letterSpacing: '-0.03em',
+                        color: '#FFFFFF',
+                        lineHeight: 1,
+                        margin: 0,
                       }}
-                    />
-                  </div>
+                      aria-live="polite"
+                      aria-label={`Loading ${Math.floor(progress)} percent`}
+                    >
+                      {Math.floor(progress)}%
+                    </p>
 
+                    <p
+                      key={statusLabel}
+                      className="animate-fade-in-up"
+                      style={{ color: '#9CA3AF', fontSize: 14, fontFamily: 'var(--font-sans)', textAlign: 'center', margin: 0 }}
+                    >
+                      {statusLabel}
+                    </p>
+
+                    <div
+                      style={{ width: '100%', height: 4, borderRadius: 2, background: '#1F1F1F' }}
+                      role="progressbar"
+                      aria-valuenow={Math.floor(progress)}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label="File processing progress"
+                    >
+                      <div
+                        style={{
+                          width: `${progress}%`,
+                          height: '100%',
+                          borderRadius: 2,
+                          background: 'linear-gradient(90deg, #6366F1, #818CF8)',
+                          boxShadow: '0 0 12px rgba(99,102,241,0.6)',
+                          transition: 'none',
+                        }}
+                      />
+                    </div>
+
+                  </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
@@ -465,20 +455,24 @@ export default function Home() {
 
         {/* ── Ready state ────────────────────────────────────────────── */}
         {appState === 'ready' && tokens && (
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
-              <DotGridBg />
-              <div id={PDF_ELEMENT_ID} style={{ position: 'relative', zIndex: 1 }}>
-                <div className="visual-content-shell">
-                  <div className="flex flex-col">
-                    <ColorsSection       tokens={tokens.colors}        sectionIndex={idx('colors')} />
-                    <TypographySection   tokens={tokens.typography}    sectionIndex={idx('typography')} />
-                    <SpacingSection      tokens={tokens.spacing}       sectionIndex={idx('spacing')} />
-                    <BorderRadiusSection tokens={tokens.borderRadius}  sectionIndex={idx('borderRadius')} />
-                    <ShadowsSection      tokens={tokens.shadows}       sectionIndex={idx('shadows')} />
-                    <OtherSection        tokens={tokens.other}         sectionIndex={idx('other')} />
+          <div style={{ position:'relative', minHeight:'100vh', backgroundColor:'#0A0A0A', overflow:'hidden' }}>
+            <div className="dot-grid-bg" />
+            <div style={{ position:'relative', zIndex:1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
+                <div id={PDF_ELEMENT_ID} style={{ position: 'relative', zIndex: 1 }}>
+                  <div className="visual-content-shell">
+                    <div className="flex flex-col">
+                      <ColorsSection       tokens={tokens.colors}        sectionIndex={idx('colors')} />
+                      <TypographySection   tokens={tokens.typography}    sectionIndex={idx('typography')} />
+                      <SpacingSection      tokens={tokens.spacing}       sectionIndex={idx('spacing')} />
+                      <BorderRadiusSection tokens={tokens.borderRadius}  sectionIndex={idx('borderRadius')} />
+                      <ShadowsSection      tokens={tokens.shadows}       sectionIndex={idx('shadows')} />
+                      <OtherSection        tokens={tokens.other}         sectionIndex={idx('other')} />
+                    </div>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>

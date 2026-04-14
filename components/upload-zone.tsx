@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { Upload, FileJson, Wand2, LayoutGrid, ChevronRight } from 'lucide-react'
+import { Upload, FileJson, Wand2, LayoutGrid } from 'lucide-react'
 
 interface UploadZoneProps {
   onFile: (content: string, filename: string) => void
@@ -10,6 +10,7 @@ interface UploadZoneProps {
 
 export function UploadZone({ onFile, onError }: UploadZoneProps) {
   const [isDragging, setIsDragging] = useState(false)
+  const [glowPos, setGlowPos] = useState<{x:number,y:number}|null>(null)
   const inputRef  = useRef<HTMLInputElement>(null)
 
   const readFile = useCallback(
@@ -68,80 +69,53 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
   ]
 
   return (
-    <div style={{ position: 'relative', backgroundColor: '#0A0A0A' }}>
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: 'none',
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
-          maskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
-        }}
-      />
-
-      <div style={{ position: 'relative', zIndex: 1 }}>
-        <div className="upload-hero-shell">
-          <div style={{ width: '100%', maxWidth: 960, textAlign: 'center' }} className="animate-fade-in-up">
-              <h1
-                className="upload-page-title"
-                style={{
-                  fontSize: 'clamp(36px, 5.5vw, 60px)',
-                  fontWeight: 900,
-                  letterSpacing: '-0.03em',
-                  lineHeight: 1.1,
-                  color: '#FFFFFF',
-                  textAlign: 'center',
-                  fontFamily: 'var(--font-sans)',
-                  margin: 0,
-                }}
-              >
+    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', width:'100%' }}>
+      <div className="upload-hero-shell">
+        <div style={{ width:'100%', maxWidth:960, textAlign:'center', display:'flex', flexDirection:'column', alignItems:'center', minHeight:'calc(100vh - 60px)', justifyContent:'center', paddingTop:80, paddingBottom:80 }} className="animate-fade-in-up">
+              <h1 style={{ fontSize:'clamp(40px, 6vw, 72px)', fontWeight:900, color:'#FFFFFF', letterSpacing:'-0.03em', lineHeight:1.1, textAlign:'center', marginBottom:20, fontFamily:'var(--font-sans)' }}>
                 Design Token Visualiser
               </h1>
               <p
-                style={{
-                  marginTop: 18,
-                  fontSize: 17,
-                  color: '#9CA3AF',
-                  maxWidth: 460,
-                  textAlign: 'center',
-                  lineHeight: 1.5,
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
+                style={{ color:'#9CA3AF', fontSize:17, fontWeight:400, lineHeight:1.6, textAlign:'center', maxWidth:460, marginBottom:40, marginTop:0, fontFamily:'var(--font-sans)' }}
               >
                 Paste your token file and instantly get a scannable visual reference for your entire system.
               </p>
 
-            <div
-              style={{ marginTop: 36, maxWidth: 500, width: '100%' }}
-              role="button"
-              tabIndex={0}
-              aria-label="Upload token file by drag and drop or browse"
-              onClick={() => inputRef.current?.click()}
-              onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              className="upload-drop-zone"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 16,
-                border: '1.5px dashed rgba(99,102,241,0.4)',
-                padding: '36px 28px',
-                cursor: 'pointer',
-                background: isDragging ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)',
-                backdropFilter: 'blur(12px)',
-                transition: 'background 150ms ease',
-                minHeight: 44,
-              }}
-            >
+            <div style={{ width:'100%', maxWidth:480, marginBottom:20, position:'relative' }}>
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label="Upload token file by drag and drop or browse"
+                onClick={() => inputRef.current?.click()}
+                onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+                }}
+                onMouseLeave={(e) => { setIsDragging(false); setGlowPos(null) }}
+                className="upload-drop-zone"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 16,
+                  border: '1.5px dashed rgba(99,102,241,0.4)',
+                  padding: '36px 28px',
+                  cursor: 'pointer',
+                  background: isDragging ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)',
+                  backdropFilter: 'blur(12px)',
+                  transition: 'background 150ms ease',
+                  minHeight: 44,
+                }}
+              >
+              {glowPos && (
+                <div style={{ position:'absolute', pointerEvents:'none', borderRadius:'50%', width:300, height:300, background:`radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)`, transform:'translate(-50%,-50%)', left:glowPos.x, top:glowPos.y, zIndex:0 }} />
+              )}
+              <div style={{position:'relative',zIndex:1,display:'flex',flexDirection:'column',alignItems:'center',width:'100%'}}>
               <Upload size={28} color="#6366F1" aria-hidden="true" />
 
               <p style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 600, marginTop: 14, marginBottom: 0 }}>
@@ -158,30 +132,32 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
                 <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
               </div>
 
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); inputRef.current?.click() }}
-                style={{
-                  background: '#6366F1',
-                  color: '#FFFFFF',
-                  borderRadius: 10,
-                  padding: '10px 28px',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  border: 'none',
-                  cursor: 'pointer',
-                  minHeight: 44,
-                  alignSelf: 'center',
-                  transition: 'opacity 150ms ease',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
-                onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-              >
-                Browse file
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); inputRef.current?.click() }}
+                  style={{
+                    background: '#6366F1',
+                    color: '#FFFFFF',
+                    borderRadius: 10,
+                    padding: '10px 28px',
+                    fontWeight: 600,
+                    fontSize: 14,
+                    border: 'none',
+                    cursor: 'pointer',
+                    minHeight: 44,
+                    alignSelf: 'center',
+                    transition: 'opacity 150ms ease',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                >
+                  Browse file
+                </button>
+              </div>
+              </div>
             </div>
 
-            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ marginTop: 20, display: 'flex', justifyContent: 'center' }}>
               <span
                 style={{
                   display: 'inline-flex',
@@ -213,74 +189,57 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
               className="sr-only"
               onChange={handleChange}
             />
-          </div>
         </div>
+      </div>
 
-        <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.07)', margin: '72px 0 0 0' }} />
-        <section
-          id="how-it-works"
-          style={{
-            paddingTop: 72,
-            paddingBottom: 80,
-            paddingLeft: 20,
-            paddingRight: 20,
-            background: 'rgba(255,255,255,0.012)',
-          }}
-        >
+      <hr style={{ border:'none', borderTop:'1px solid rgba(255,255,255,0.07)', width:'100%', margin:'72px 0 0 0' }} />
+      <section
+        id="how-it-works"
+        style={{ width:'100%', paddingTop:88, paddingBottom:96, paddingLeft:24, paddingRight:24, background:'rgba(255,255,255,0.012)' }}
+      >
           <div style={{ maxWidth: 1120, margin: '0 auto', textAlign: 'center' }}>
-            <h2
-              style={{
-                color: '#FFFFFF',
-                fontSize: 20,
-                fontWeight: 700,
-                marginBottom: 52,
-              }}
-            >
-              How it works
-            </h2>
+          <h2
+            style={{
+              color: '#FFFFFF',
+              fontSize: 32,
+              fontWeight: 800,
+              textAlign: 'center',
+              marginBottom: 56,
+            }}
+          >
+            How it works
+          </h2>
 
-            <div className="how-steps-row" style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: 48 }}>
-              {HOW_IT_WORKS_STEPS.map((step, i) => (
-                <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:0 }}>
+            {HOW_IT_WORKS_STEPS.map((step, i) => (
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
+                <div
+                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width:200, textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
+                >
                   <div
                     style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                      maxWidth: 220,
-                      textAlign: 'center',
+                      borderRadius: 14,
+                      background: 'rgba(99,102,241,0.12)',
+                      padding: 18,
+                      marginBottom: 20,
                     }}
                   >
-                    <div
-                      style={{
-                        borderRadius: 12,
-                        background: 'rgba(99,102,241,0.12)',
-                        padding: 14,
-                        marginBottom: 16,
-                      }}
-                    >
-                      <step.Icon size={22} color="#6366F1" aria-hidden="true" />
-                    </div>
-                    <p style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}>{step.title}</p>
-                    <p style={{ color: '#6B7280', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{step.description}</p>
+                    <step.Icon size={22} color="#6366F1" aria-hidden="true" />
                   </div>
-
-                  {i < HOW_IT_WORKS_STEPS.length - 1 && (
-                    <ChevronRight
-                      size={18}
-                      color="#374151"
-                      aria-hidden="true"
-                      className="how-step-chevron"
-                      style={{ alignSelf: 'center', flexShrink: 0 }}
-                    />
-                  )}
+                  <p style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700, margin: '0 0 10px' }}>{step.title}</p>
+                  <p style={{ color:'#9CA3AF', fontSize:14, lineHeight:1.7, maxWidth:180, textAlign:'center', margin:0, flexGrow:1 }}>
+                    {step.description}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
+                {i < HOW_IT_WORKS_STEPS.length - 1 && (
+                  <span style={{ fontSize:18, color:'rgba(99,102,241,0.5)', flexShrink:0, userSelect:'none', width:64, textAlign:'center', display:'flex', alignItems:'center', justifyContent:'center' }}>→</span>
+                )}
+              </div>
+            ))}
+          </div>
+          </div>
+      </section>
       </div>
-    </div>
   )
 }
