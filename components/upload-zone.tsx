@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { Upload, FileJson, Wand2, LayoutGrid } from 'lucide-react'
+import { Upload } from 'lucide-react'
 
 interface UploadZoneProps {
   onFile: (content: string, filename: string) => void
@@ -46,27 +46,6 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
     if (file) readFile(file)
     e.target.value = ''
   }
-
-  const HOW_IT_WORKS_STEPS = [
-    {
-      id: 'drop',
-      Icon: FileJson,
-      title: 'Drop your file',
-      description: 'Upload any .json token file from your design system',
-    },
-    {
-      id: 'parse',
-      Icon: Wand2,
-      title: 'Tokens are parsed',
-      description: 'We detect colors, typography, spacing and more automatically',
-    },
-    {
-      id: 'see',
-      Icon: LayoutGrid,
-      title: 'See your system',
-      description: 'Browse and copy tokens from a clean visual reference',
-    },
-  ]
 
   return (
     <div style={{ display:'flex', flexDirection:'column', alignItems:'center', width:'100%' }}>
@@ -192,54 +171,6 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
         </div>
       </div>
 
-      <hr style={{ border:'none', borderTop:'1px solid rgba(255,255,255,0.07)', width:'100%', margin:'72px 0 0 0' }} />
-      <section
-        id="how-it-works"
-        style={{ width:'100%', paddingTop:88, paddingBottom:96, paddingLeft:24, paddingRight:24, background:'rgba(255,255,255,0.012)' }}
-      >
-          <div style={{ maxWidth: 1120, margin: '0 auto', textAlign: 'center' }}>
-          <h2
-            style={{
-              color: '#FFFFFF',
-              fontSize: 32,
-              fontWeight: 800,
-              textAlign: 'center',
-              marginBottom: 56,
-            }}
-          >
-            How it works
-          </h2>
-
-          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center', height: '100%' }}>
-            {HOW_IT_WORKS_STEPS.map((step, i) => (
-              <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
-                <div
-                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width: '100%', maxWidth: 320, height: '100%', textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
-                >
-                  <div
-                    style={{
-                      borderRadius: 14,
-                      background: 'rgba(99,102,241,0.12)',
-                      padding: 18,
-                      marginBottom: 20,
-                    }}
-                  >
-                    <step.Icon size={22} color="#6366F1" aria-hidden="true" />
-                  </div>
-                  <p style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 700, margin: '0 0 10px' }}>{step.title}</p>
-                  <p style={{ color:'#9CA3AF', fontSize:14, lineHeight:1.7, maxWidth:180, textAlign:'center', margin:0, flexGrow:1 }}>
-                    {step.description}
-                  </p>
-                </div>
-
-                {i < HOW_IT_WORKS_STEPS.length - 1 && (
-                  <span className="how-step-arrow" style={{ fontSize:18, color:'rgba(99,102,241,0.5)', flexShrink:0, userSelect:'none', width:64, textAlign:'center', alignItems:'center', justifyContent:'center' }}>→</span>
-                )}
-              </div>
-            ))}
-          </div>
-          </div>
-      </section>
       </div>
   )
 }

@@ -12,17 +12,6 @@ export function Navbar({ variant, onLogoClick }: NavbarProps) {
 
   const navLinks = [
     {
-      id: 'how-it-works',
-      label: 'How it works',
-      href: '#how-it-works',
-      onClick: onLogoClick
-        ? (e: React.MouseEvent<HTMLAnchorElement>) => {
-            e.preventDefault()
-            onLogoClick()
-          }
-        : undefined,
-    },
-    {
       id: 'review',
       label: 'Leave a review',
       href: 'https://www.linkedin.com/in/madhura-patgavkar/',
