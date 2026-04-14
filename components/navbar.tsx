@@ -99,7 +99,7 @@ export function Navbar({ variant, onLogoClick }: NavbarProps) {
         </div>
 
         {variant === 'full' ? (
-          <nav aria-label="Site navigation" className="" style={{ display:'flex' }}>
+          <nav aria-label="Site navigation" className="nav-links" style={{ display: 'flex' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
               {navLinks.map((link) => (
                 <a

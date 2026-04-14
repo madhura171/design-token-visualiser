@@ -103,6 +103,7 @@ export default function Home() {
   // Auto-dismiss error after 4 s
   useEffect(() => {
     if (!errorKind) return
+    if (errorKind === 'no-tokens' || errorKind === 'parse-error') return
     const t = setTimeout(() => setErrorKind(null), 4000)
     return () => clearTimeout(t)
   }, [errorKind])
@@ -135,6 +136,7 @@ export default function Home() {
 
     if (totalTokenCount(parsed) === 0) {
       setErrorKind('no-tokens')
+      setAppState('upload')
       return
     }
 
@@ -342,33 +344,51 @@ export default function Home() {
                     </div>
                   )}
                   {errorKind === 'no-tokens' && (
-                    <div
-                      className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
-                      style={{
-                        background: 'rgba(245,158,11,0.08)',
-                        border: '1px solid rgba(245,158,11,0.2)',
-                        color: '#F59E0B',
-                        fontFamily: 'var(--font-sans)',
-                      }}
-                      role="alert"
-                    >
-                      <AlertTriangle size={14} aria-hidden="true" />
-                      {"We couldn't find any design tokens in this file. Check it uses W3C or Figma Tokens format."}
+                    <div style={{
+                      position: 'fixed',
+                      bottom: 24,
+                      right: 24,
+                      zIndex: 100,
+                      background: '#1A1A1A',
+                      border: '1px solid rgba(245,158,11,0.3)',
+                      borderRadius: 12,
+                      padding: '12px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      fontSize: 13,
+                      color: '#FFFFFF',
+                      boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                    }}>
+                      <AlertTriangle size={14} color="#F59E0B" />
+                      <span>No tokens found. Check it uses W3C or Figma Tokens format.</span>
+                      <button onClick={() => setErrorKind(null)} aria-label="Dismiss notification" style={{ marginLeft: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#71717A', padding: 0, display: 'flex', alignItems: 'center', minHeight: 28, minWidth: 28, justifyContent: 'center' }}>
+                        <X size={14} />
+                      </button>
                     </div>
                   )}
                   {errorKind === 'parse-error' && (
-                    <div
-                      className="flash-in flex items-center gap-2 rounded-full px-4 py-2 text-sm"
-                      style={{
-                        background: 'rgba(239,68,68,0.08)',
-                        border: '1px solid rgba(239,68,68,0.2)',
-                        color: '#EF4444',
-                        fontFamily: 'var(--font-sans)',
-                      }}
-                      role="alert"
-                    >
-                      <AlertCircle size={14} aria-hidden="true" />
-                      {errorMsg ?? 'Failed to parse the file.'}
+                    <div style={{
+                      position: 'fixed',
+                      bottom: 24,
+                      right: 24,
+                      zIndex: 100,
+                      background: '#1A1A1A',
+                      border: '1px solid rgba(239,68,68,0.3)',
+                      borderRadius: 12,
+                      padding: '12px 16px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      fontSize: 13,
+                      color: '#FFFFFF',
+                      boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                    }}>
+                      <AlertCircle size={14} color="#EF4444" />
+                      <span>{errorMsg ?? 'Failed to parse file.'}</span>
+                      <button onClick={() => setErrorKind(null)} aria-label="Dismiss notification" style={{ marginLeft: 12, background: 'none', border: 'none', cursor: 'pointer', color: '#71717A', padding: 0, display: 'flex', alignItems: 'center', minHeight: 28, minWidth: 28, justifyContent: 'center' }}>
+                        <X size={14} />
+                      </button>
                     </div>
                   )}
                 </div>

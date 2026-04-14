@@ -27,9 +27,6 @@ export function Footer() {
           margin: '0 auto',
           paddingLeft: 48,
           paddingRight: 48,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
         }}
       >
         <p style={{ color: '#6B7280', fontSize: 13, fontFamily: 'var(--font-sans)', margin: 0 }}>

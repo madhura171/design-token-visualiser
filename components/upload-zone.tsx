@@ -210,11 +210,11 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
             How it works
           </h2>
 
-          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:0 }}>
+          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
             {HOW_IT_WORKS_STEPS.map((step, i) => (
               <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
                 <div
-                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width:200, textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
+                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width: '100%', maxWidth: 320, textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
                 >
                   <div
                     style={{
@@ -233,7 +233,7 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
                 </div>
 
                 {i < HOW_IT_WORKS_STEPS.length - 1 && (
-                  <span style={{ fontSize:18, color:'rgba(99,102,241,0.5)', flexShrink:0, userSelect:'none', width:64, textAlign:'center', display:'flex', alignItems:'center', justifyContent:'center' }}>→</span>
+                  <span className="how-step-arrow" style={{ fontSize:18, color:'rgba(99,102,241,0.5)', flexShrink:0, userSelect:'none', width:64, textAlign:'center', alignItems:'center', justifyContent:'center' }}>→</span>
                 )}
               </div>
             ))}
