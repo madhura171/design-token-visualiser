@@ -1,0 +1,181 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* ── Dark premium design system ── */
+  --token-bg:               #0A0A0A;
+  --token-surface:          #111111;
+  --token-surface-hover:    #161616;
+  --token-border:           rgba(255,255,255,0.08);
+  --token-border-dashed:    rgba(99,102,241,0.4);
+  --token-text-primary:     #FAFAFA;
+  --token-text-secondary:   #71717A;
+  --token-text-mono:        #A1A1AA;
+  --token-accent:           #6366F1;
+  --token-accent-light:     #818CF8;
+  --token-accent-fg:        #ffffff;
+  --token-success:          #22C55E;
+  --token-error:            #EF4444;
+  --token-warning:          #F59E0B;
+  --token-track:            #1F1F1F;
+
+  /* shadcn compat */
+  --background:             #0A0A0A;
+  --foreground:             #FAFAFA;
+  --card:                   #111111;
+  --card-foreground:        #FAFAFA;
+  --popover:                #111111;
+  --popover-foreground:     #FAFAFA;
+  --primary:                #6366F1;
+  --primary-foreground:     #ffffff;
+  --secondary:              #1F1F1F;
+  --secondary-foreground:   #FAFAFA;
+  --muted:                  #1F1F1F;
+  --muted-foreground:       #71717A;
+  --accent:                 #1F1F1F;
+  --accent-foreground:      #FAFAFA;
+  --destructive:            #EF4444;
+  --destructive-foreground: #ffffff;
+  --border:                 rgba(255,255,255,0.08);
+  --input:                  #1F1F1F;
+  --ring:                   #6366F1;
+  --radius:                 0.75rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --color-token-bg:             var(--token-bg);
+  --color-token-surface:        var(--token-surface);
+  --color-token-surface-hover:  var(--token-surface-hover);
+  --color-token-border:         var(--token-border);
+  --color-token-border-dashed:  var(--token-border-dashed);
+  --color-token-text-primary:   var(--token-text-primary);
+  --color-token-text-secondary: var(--token-text-secondary);
+  --color-token-text-mono:      var(--token-text-mono);
+  --color-token-accent:         var(--token-accent);
+  --color-token-accent-light:   var(--token-accent-light);
+  --color-token-accent-fg:      var(--token-accent-fg);
+  --color-token-success:        var(--token-success);
+  --color-token-error:          var(--token-error);
+  --color-token-warning:        var(--token-warning);
+  --color-token-track:          var(--token-track);
+
+  --color-background:           var(--background);
+  --color-foreground:           var(--foreground);
+  --color-card:                 var(--card);
+  --color-card-foreground:      var(--card-foreground);
+  --color-popover:              var(--popover);
+  --color-popover-foreground:   var(--popover-foreground);
+  --color-primary:              var(--primary);
+  --color-primary-foreground:   var(--primary-foreground);
+  --color-secondary:            var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:                var(--muted);
+  --color-muted-foreground:     var(--muted-foreground);
+  --color-accent:               var(--accent);
+  --color-accent-foreground:    var(--accent-foreground);
+  --color-destructive:          var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border:               var(--border);
+  --color-input:                var(--input);
+  --color-ring:                 var(--ring);
+  --radius-sm:   calc(var(--radius) - 4px);
+  --radius-md:   var(--radius);
+  --radius-lg:   calc(var(--radius) + 2px);
+  --radius-xl:   calc(var(--radius) + 6px);
+}
+
+/* ── Base ───────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  /* Dot grid lives on the body so nothing can cover it */
+  body {
+    background-color: #0A0A0A;
+    background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+    color: #FAFAFA;
+  }
+}
+
+/* .dot-grid kept for loading state which also uses it */
+.dot-grid {
+  background-color: #0A0A0A;
+  background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Card shadow ─────────────────────────────────────────────────── */
+.token-card-shadow {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.06),
+    0 4px 24px rgba(0,0,0,0.4);
+}
+
+/* ── Indigo glow ─────────────────────────────────────────────────── */
+.indigo-glow {
+  box-shadow: 0 0 32px rgba(99,102,241,0.2);
+}
+
+.progress-glow {
+  box-shadow: 0 0 12px rgba(99,102,241,0.6);
+}
+
+/* ── Section / card reveal animation ────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+/* Section stagger: 800ms base + index * 300ms */
+.section-reveal {
+  animation: fadeInUp 0.6s ease-out both;
+  animation-delay: calc(800ms + var(--section-index, 0) * 300ms);
+}
+
+/* Card stagger: base + section delay + card * 60ms */
+.card-reveal {
+  animation: fadeInUp 0.6s ease-out both;
+  animation-delay: calc(
+    800ms +
+    var(--section-index, 0) * 300ms +
+    var(--card-index, 0) * 60ms
+  );
+}
+
+/* ── Progress bar ────────────────────────────────────────────────── */
+/* No CSS transition — width is driven directly by the RAFcounter */
+.progress-bar-fill {
+  /* intentionally no transition: JS drives this frame-by-frame */
+}
+
+/* ── Flash notification ──────────────────────────────────────────── */
+@keyframes flashIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.flash-in {
+  animation: flashIn 0.3s ease-out both;
+}
+
+/* ── Print ───────────────────────────────────────────────────────── */
+@media print {
+  header, [data-no-print], button { display: none !important; }
+  body, html {
+    background: #0A0A0A !important;
+    color: #FAFAFA !important;
+    font-size: 11pt;
+  }
+  * { animation: none !important; transition: none !important; }
+  [data-token-card] { break-inside: avoid; page-break-inside: avoid; }
+  .grid { display: grid !important; }
+}
