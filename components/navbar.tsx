@@ -23,13 +23,6 @@ export function Navbar({ variant, onLogoClick }: NavbarProps) {
         : undefined,
     },
     {
-      id: 'feedback',
-      label: 'Feedback',
-      href: 'https://www.linkedin.com/in/madhura-patgavkar/',
-      target: '_blank',
-      rel: 'noopener noreferrer',
-    },
-    {
       id: 'review',
       label: 'Leave a review',
       href: 'https://www.linkedin.com/in/madhura-patgavkar/',

@@ -210,11 +210,11 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
             How it works
           </h2>
 
-          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center' }}>
+          <div className="how-steps-row" style={{ display:'flex', justifyContent:'center', alignItems:'center', height: '100%' }}>
             {HOW_IT_WORKS_STEPS.map((step, i) => (
               <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
                 <div
-                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width: '100%', maxWidth: 320, textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
+                  style={{ display:'flex', flexDirection:'column', alignItems:'center', width: '100%', maxWidth: 320, height: '100%', textAlign:'center', background:'rgba(255,255,255,0.04)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'28px 20px 24px', position:'relative', flexShrink:0 }}
                 >
                   <div
                     style={{

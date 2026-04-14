@@ -216,7 +216,7 @@ input:focus-visible,
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0;
+  gap: 24px;
 }
 
 @media (max-width: 768px) {
