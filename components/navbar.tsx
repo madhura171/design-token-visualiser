@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Menu } from 'lucide-react'
 
 interface NavbarProps {
+  variant: 'full' | 'logo-only'
   onLogoClick?: () => void
 }
 
-export function Navbar({ onLogoClick }: NavbarProps) {
+export function Navbar({ variant, onLogoClick }: NavbarProps) {
   const [menuHover, setMenuHover] = useState<string | null>(null)
 
   const navLinks = [
@@ -45,12 +45,12 @@ export function Navbar({ onLogoClick }: NavbarProps) {
         top: 0,
         left: 0,
         right: 0,
-        height: 56,
+        height: 60,
         zIndex: 50,
-        background: 'rgba(10,10,10,0.8)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        background: 'rgba(10,10,10,0.9)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid rgba(255,255,255,0.07)',
         display: 'flex',
         alignItems: 'center',
       }}
@@ -58,9 +58,8 @@ export function Navbar({ onLogoClick }: NavbarProps) {
       <div
         style={{
           width: '100%',
-          maxWidth: 1280,
-          margin: '0 auto',
-          padding: '0 24px',
+          paddingLeft: 40,
+          paddingRight: 40,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -72,7 +71,7 @@ export function Navbar({ onLogoClick }: NavbarProps) {
             style={{
               color: '#FFFFFF',
               fontWeight: 800,
-              fontSize: 18,
+              fontSize: 17,
               letterSpacing: '-0.03em',
               fontFamily: 'var(--font-sans)',
               lineHeight: 1,
@@ -86,10 +85,10 @@ export function Navbar({ onLogoClick }: NavbarProps) {
               color: '#A5B4FC',
               border: '1px solid rgba(99,102,241,0.3)',
               borderRadius: 9999,
-              padding: '2px 10px',
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: '0.05em',
+              padding: '2px 9px',
+              fontSize: 10,
+              fontWeight: 700,
+              marginLeft: 8,
               fontFamily: 'var(--font-sans)',
               lineHeight: 1.6,
             }}
@@ -98,58 +97,39 @@ export function Navbar({ onLogoClick }: NavbarProps) {
           </span>
         </div>
 
-        {/* Right: nav links (hidden on mobile) + hamburger (mobile only) */}
-        <nav aria-label="Site navigation">
-          {/* Desktop nav */}
-          <div
-            style={{ display: 'flex', alignItems: 'center', gap: 32 }}
-            className="hidden sm:flex"
-          >
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.href}
-                target={link.target}
-                rel={link.rel}
-                onClick={link.onClick}
-                style={{
-                  color: menuHover === link.id ? '#FFFFFF' : '#A1A1AA',
-                  fontSize: 14,
-                  fontWeight: 500,
-                  fontFamily: 'var(--font-sans)',
-                  textDecoration: 'none',
-                  transition: 'color 150ms',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={() => setMenuHover(link.id)}
-                onMouseLeave={() => setMenuHover(null)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-
-          {/* Mobile hamburger placeholder */}
-          <button
-            type="button"
-            aria-label="Open navigation menu"
-            className="flex sm:hidden items-center justify-center"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '8px',
-              color: '#A1A1AA',
-              minHeight: 44,
-              minWidth: 44,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Menu size={20} aria-hidden="true" />
-          </button>
-        </nav>
+        {variant === 'full' ? (
+          <nav aria-label="Site navigation" className="hidden sm:block">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+              {navLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.href}
+                  target={link.target}
+                  rel={link.rel}
+                  onClick={link.onClick}
+                  style={{
+                    color: menuHover === link.id ? '#FFFFFF' : '#9CA3AF',
+                    fontSize: 14,
+                    fontWeight: 500,
+                    fontFamily: 'var(--font-sans)',
+                    textDecoration: 'none',
+                    transition: 'color 150ms ease',
+                    cursor: 'pointer',
+                    minHeight: 44,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                  onMouseEnter={() => setMenuHover(link.id)}
+                  onMouseLeave={() => setMenuHover(null)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </nav>
+        ) : (
+          <div aria-hidden="true" style={{ width: 1, height: 1 }} />
+        )}
       </div>
     </header>
   )

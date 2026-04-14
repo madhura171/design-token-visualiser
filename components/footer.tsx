@@ -14,52 +14,34 @@ export function Footer() {
   return (
     <footer
       style={{
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderTop: '1px solid rgba(255,255,255,0.07)',
         background: 'transparent',
-        paddingTop: 32,
-        paddingBottom: 32,
+        paddingTop: 28,
+        paddingBottom: 28,
       }}
     >
       <div
+        className="footer-row"
         style={{
-          maxWidth: 1280,
+          maxWidth: 1120,
           margin: '0 auto',
-          padding: '0 24px',
+          paddingLeft: 40,
+          paddingRight: 40,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 16,
         }}
       >
-        {/* Left */}
-        <p
-          style={{
-            color: '#71717A',
-            fontSize: 13,
-            fontFamily: 'var(--font-sans)',
-            margin: 0,
-          }}
-        >
-          &copy; 2026 Design Token Visualiser
-        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <p style={{ color: '#6B7280', fontSize: 13, fontFamily: 'var(--font-sans)', margin: 0 }}>
+            &copy; 2026 Design Token Visualiser
+          </p>
+          <p style={{ color: '#4B5563', fontSize: 12, fontFamily: 'var(--font-sans)', margin: 0 }}>
+            Made to learn, made to share
+          </p>
+        </div>
 
-        {/* Center */}
-        <p
-          style={{
-            color: '#71717A',
-            fontSize: 13,
-            fontFamily: 'var(--font-sans)',
-            margin: 0,
-            textAlign: 'center',
-            flex: '1 1 auto',
-          }}
-        >
-          Built with ❤️ curiosity to learn and share
-        </p>
-
-        {/* Right: icon links */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           {iconLinks.map(({ id, href, Icon, label }) => (
             <a
               key={id}
@@ -69,7 +51,7 @@ export function Footer() {
               aria-label={label}
               style={{
                 color: hovered === id ? '#FFFFFF' : '#71717A',
-                transition: 'color 150ms',
+                transition: 'color 150ms ease',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',

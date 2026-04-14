@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useRef, useState } from 'react'
-import { cn } from '@/lib/utils'
 import { Upload, FileJson, Wand2, LayoutGrid, ChevronRight } from 'lucide-react'
 
 interface UploadZoneProps {
@@ -10,17 +9,8 @@ interface UploadZoneProps {
 }
 
 export function UploadZone({ onFile, onError }: UploadZoneProps) {
-  const [isDragging, setIsDragging]   = useState(false)
-  const [glowPos, setGlowPos]         = useState<{ x: number; y: number } | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
   const inputRef  = useRef<HTMLInputElement>(null)
-  const zoneRef   = useRef<HTMLDivElement>(null)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!zoneRef.current) return
-    const rect = zoneRef.current.getBoundingClientRect()
-    setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
-  }
-  const handleMouseLeave = () => setGlowPos(null)
 
   const readFile = useCallback(
     (file: File) => {
@@ -78,110 +68,93 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
   ]
 
   return (
-    // Outermost: bg color only, position:relative so the dot-grid layer is absolute inside
     <div style={{ position: 'relative', backgroundColor: '#0A0A0A' }}>
-
-      {/* Dot-grid background — masked, pointer-events:none — Fix 1: fade starts at 60% */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
           zIndex: 0,
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)',
-          maskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)',
           pointerEvents: 'none',
+          backgroundImage: 'radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px)',
+          backgroundSize: '24px 24px',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
         }}
       />
 
-      {/* All content — zIndex:1, never masked */}
       <div style={{ position: 'relative', zIndex: 1 }}>
-
-        {/* ── Hero + drop zone ──────────────────────────────────────── */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh',
-            // Fix 2: 64px top/bottom padding accounts for 56px navbar + breathing room
-            padding: '80px 24px 64px',
-          }}
-        >
-          <div style={{ width: '100%', maxWidth: 520, textAlign: 'center' }}>
-
-            {/* Page heading */}
-            <div style={{ marginBottom: 64 }} className="animate-fade-in-up">
+        <div className="upload-hero-shell">
+          <div style={{ width: '100%', maxWidth: 960, textAlign: 'center' }} className="animate-fade-in-up">
               <h1
-                className="text-white leading-none"
+                className="upload-page-title"
                 style={{
-                  fontSize: 56,
-                  fontWeight: 800,
+                  fontSize: 'clamp(36px, 5.5vw, 60px)',
+                  fontWeight: 900,
                   letterSpacing: '-0.03em',
+                  lineHeight: 1.1,
+                  color: '#FFFFFF',
+                  textAlign: 'center',
                   fontFamily: 'var(--font-sans)',
-                  marginBottom: 16,
+                  margin: 0,
                 }}
               >
                 Design Token Visualiser
               </h1>
-              <p style={{ color: '#A1A1AA', fontSize: 16, fontFamily: 'var(--font-sans)', lineHeight: 1.6, margin: 0 }}>
-                Drop your token file. Instantly see your system.
+              <p
+                style={{
+                  marginTop: 18,
+                  fontSize: 17,
+                  color: '#9CA3AF',
+                  maxWidth: 460,
+                  textAlign: 'center',
+                  lineHeight: 1.5,
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                }}
+              >
+                Paste your token file and instantly get a scannable visual reference for your entire system.
               </p>
-            </div>
 
-            {/* Drop zone */}
             <div
-              ref={zoneRef}
+              style={{ marginTop: 36, maxWidth: 500, width: '100%' }}
               role="button"
               tabIndex={0}
-              aria-label="Upload token JSON file — drag and drop or press Enter to browse"
+              aria-label="Upload token file by drag and drop or browse"
               onClick={() => inputRef.current?.click()}
               onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              className={cn('select-none transition-all duration-200', isDragging && 'scale-[1.01]')}
+              className="upload-drop-zone"
               style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: 16,
-                borderRadius: 20,
-                borderWidth: 1.5,
-                borderStyle: 'dashed',
-                padding: '52px 40px',
+                justifyContent: 'center',
+                borderRadius: 16,
+                border: '1.5px dashed rgba(99,102,241,0.4)',
+                padding: '36px 28px',
                 cursor: 'pointer',
-                overflow: 'hidden',
-                borderColor: isDragging ? 'rgba(99,102,241,0.8)' : 'rgba(99,102,241,0.5)',
-                background: isDragging
-                  ? 'rgba(255,255,255,0.10)'
-                  : glowPos
-                  ? `radial-gradient(300px circle at ${glowPos.x}px ${glowPos.y}px, rgba(99,102,241,0.12) 0%, transparent 70%), rgba(255,255,255,0.06)`
-                  : 'rgba(255,255,255,0.06)',
+                background: isDragging ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.04)',
                 backdropFilter: 'blur(12px)',
-                boxShadow: isDragging || glowPos ? '0 0 32px rgba(99,102,241,0.2)' : 'none',
-                outline: 'none',
+                transition: 'background 150ms ease',
+                minHeight: 44,
               }}
-              onFocus={e => (e.currentTarget.style.boxShadow = '0 0 0 2px #6366F1')}
-              onBlur={e => (e.currentTarget.style.boxShadow = isDragging || glowPos ? '0 0 32px rgba(99,102,241,0.2)' : 'none')}
             >
-              <Upload size={32} color="#6366F1" aria-hidden="true" />
+              <Upload size={28} color="#6366F1" aria-hidden="true" />
 
-              <p style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 600, fontFamily: 'var(--font-sans)', margin: 0 }}>
-                {isDragging ? 'Release to upload' : 'Drag & drop your token file'}
+              <p style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 600, marginTop: 14, marginBottom: 0 }}>
+                Drag & drop your token file
               </p>
 
-              <p style={{ color: '#A1A1AA', fontSize: 14, fontFamily: 'var(--font-sans)', margin: 0 }}>
-                JSON files only &middot; W3C and Figma Tokens format supported
+              <p style={{ color: '#6B7280', fontSize: 14, marginTop: 6, marginBottom: 0 }}>
+                JSON · W3C and Figma Tokens format
               </p>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', margin: '8px 0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', marginTop: 20, marginBottom: 20 }}>
                 <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
-                <span style={{ color: '#A1A1AA', fontSize: 13, fontFamily: 'var(--font-sans)' }}>or</span>
+                <span style={{ color: '#6B7280', fontSize: 13 }}>or</span>
                 <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.08)' }} />
               </div>
 
@@ -192,26 +165,23 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
                   background: '#6366F1',
                   color: '#FFFFFF',
                   borderRadius: 10,
-                  padding: '12px 28px',
+                  padding: '10px 28px',
                   fontWeight: 600,
-                  fontSize: 15,
-                  fontFamily: 'var(--font-sans)',
+                  fontSize: 14,
                   border: 'none',
                   cursor: 'pointer',
                   minHeight: 44,
-                  outlineOffset: 2,
+                  alignSelf: 'center',
+                  transition: 'opacity 150ms ease',
                 }}
                 onMouseEnter={e => (e.currentTarget.style.opacity = '0.88')}
                 onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-                onFocus={e => (e.currentTarget.style.outline = '2px solid #A5B4FC')}
-                onBlur={e => (e.currentTarget.style.outline = 'none')}
               >
                 Browse file
               </button>
             </div>
 
-            {/* Privacy pill — Fix 2: 16px below drop zone */}
-            <div style={{ marginTop: 16, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ marginTop: 18, display: 'flex', justifyContent: 'center' }}>
               <span
                 style={{
                   display: 'inline-flex',
@@ -221,9 +191,8 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
                   padding: '6px 14px',
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.08)',
-                  color: '#A1A1AA',
+                  color: '#9CA3AF',
                   fontSize: 13,
-                  fontFamily: 'var(--font-sans)',
                 }}
               >
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -234,115 +203,75 @@ export function UploadZone({ onFile, onError }: UploadZoneProps) {
               </span>
             </div>
 
-            {/* Hidden file input */}
             <label htmlFor="token-file-input" className="sr-only">Upload token JSON file</label>
             <input
               ref={inputRef}
               id="token-file-input"
               type="file"
               accept=".json,application/json"
+              aria-label="Choose token file"
               className="sr-only"
               onChange={handleChange}
             />
           </div>
         </div>
 
-        {/* ── Fix 4: "How it works" section ────────────────────────── */}
+        <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.07)', margin: '72px 0 0 0' }} />
         <section
           id="how-it-works"
           style={{
-            paddingTop: 80,
+            paddingTop: 72,
             paddingBottom: 80,
-            paddingLeft: 24,
-            paddingRight: 24,
-            borderTop: '1px solid rgba(255,255,255,0.06)',
+            paddingLeft: 20,
+            paddingRight: 20,
+            background: 'rgba(255,255,255,0.012)',
           }}
         >
-          <div style={{ maxWidth: 1280, margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: 1120, margin: '0 auto', textAlign: 'center' }}>
             <h2
               style={{
                 color: '#FFFFFF',
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: 700,
-                fontFamily: 'var(--font-sans)',
-                marginBottom: 40,
-                letterSpacing: '-0.01em',
+                marginBottom: 52,
               }}
             >
               How it works
             </h2>
 
-            {/* Steps row — horizontal on desktop, stacked on mobile */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 0,
-                flexWrap: 'wrap',
-              }}
-            >
+            <div className="how-steps-row" style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', gap: 48 }}>
               {HOW_IT_WORKS_STEPS.map((step, i) => (
                 <div key={step.id} style={{ display: 'flex', alignItems: 'center' }}>
-                  {/* Step card */}
                   <div
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
                       alignItems: 'center',
-                      gap: 16,
-                      padding: '0 32px',
-                      maxWidth: 240,
+                      maxWidth: 220,
+                      textAlign: 'center',
                     }}
                   >
                     <div
                       style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 16,
+                        borderRadius: 12,
                         background: 'rgba(99,102,241,0.12)',
-                        border: '1px solid rgba(99,102,241,0.2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
+                        padding: 14,
+                        marginBottom: 16,
                       }}
                     >
-                      <step.Icon size={24} color="#6366F1" aria-hidden="true" />
+                      <step.Icon size={22} color="#6366F1" aria-hidden="true" />
                     </div>
-                    <div>
-                      <p
-                        style={{
-                          color: '#FFFFFF',
-                          fontSize: 16,
-                          fontWeight: 600,
-                          fontFamily: 'var(--font-sans)',
-                          margin: '0 0 8px',
-                        }}
-                      >
-                        {step.title}
-                      </p>
-                      <p
-                        style={{
-                          color: '#9CA3AF',
-                          fontSize: 14,
-                          fontFamily: 'var(--font-sans)',
-                          lineHeight: 1.6,
-                          margin: 0,
-                        }}
-                      >
-                        {step.description}
-                      </p>
-                    </div>
+                    <p style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 600, margin: '0 0 8px' }}>{step.title}</p>
+                    <p style={{ color: '#6B7280', fontSize: 13, lineHeight: 1.5, margin: 0 }}>{step.description}</p>
                   </div>
 
-                  {/* Chevron separator — hidden on last step and on mobile */}
                   {i < HOW_IT_WORKS_STEPS.length - 1 && (
                     <ChevronRight
-                      size={20}
-                      color="#4B5563"
+                      size={18}
+                      color="#374151"
                       aria-hidden="true"
-                      className="hidden sm:block flex-shrink-0"
+                      className="how-step-chevron"
+                      style={{ alignSelf: 'center', flexShrink: 0 }}
                     />
                   )}
                 </div>

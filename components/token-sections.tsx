@@ -32,9 +32,7 @@ function useCopy(text: string) {
 }
 
 // ── Inline copy button ─────────────────────────────────────────────
-// Fix 3: min 44x44px touch target (padding compensates visual size),
-//         focus ring on :focus-visible via onFocus/onBlur,
-//         aria-label describes exact value being copied.
+// Fix 3: min 44x44px touch target and descriptive aria-label.
 function InlineCopyBtn({
   text,
   label = 'Copy value',
@@ -51,8 +49,6 @@ function InlineCopyBtn({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       aria-label={copied ? 'Copied!' : label}
-      onFocus={e => (e.currentTarget.style.outline = '2px solid #6366F1')}
-      onBlur={e => (e.currentTarget.style.outline = 'none')}
       style={{
         // Fix 3: 44x44 min touch target via padding around 28x28 visual
         display: 'inline-flex',
@@ -112,7 +108,12 @@ export function Section({ title, count, sectionIndex, children }: SectionProps) 
   return (
     <section
       className="section-reveal"
-      style={{ '--section-index': sectionIndex } as React.CSSProperties}
+      style={{
+        '--section-index': sectionIndex,
+        paddingTop: 48,
+        paddingBottom: 48,
+        borderTop: sectionIndex > 0 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+      } as React.CSSProperties}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
         {/* Fix 2: font-sans for section headings */}
@@ -137,11 +138,6 @@ export function Section({ title, count, sectionIndex, children }: SectionProps) 
       </div>
 
       {children}
-
-      <div
-        style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginTop: 48 }}
-        aria-hidden="true"
-      />
     </section>
   )
 }

@@ -6,7 +6,7 @@ import { usePdfDownload } from '@/lib/use-pdf-download'
 import { UploadZone } from '@/components/upload-zone'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { AlertCircle, AlertTriangle, CheckCircle2, X } from 'lucide-react'
+import { AlertCircle, AlertTriangle, CheckCircle2, X, ChevronLeft, Download } from 'lucide-react'
 import {
   ColorsSection,
   TypographySection,
@@ -85,7 +85,7 @@ type ErrorKind  = 'not-json' | 'no-tokens' | 'parse-error' | null
 
 const PDF_ELEMENT_ID = 'token-output'
 
-// ── Dot-grid background layer — Fix 1: mask starts fading at 60% ─
+// Dot-grid background layer for loading/visual states only.
 function DotGridBg() {
   return (
     <div
@@ -94,11 +94,11 @@ function DotGridBg() {
         position: 'absolute',
         inset: 0,
         zIndex: 0,
-        backgroundImage: 'radial-gradient(rgba(255,255,255,0.15) 1px, transparent 1px)',
-        backgroundSize: '24px 24px',
-        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)',
-        maskImage: 'linear-gradient(to bottom, black 0%, black 60%, transparent 100%)',
         pointerEvents: 'none',
+        backgroundImage: 'radial-gradient(rgba(255,255,255,0.13) 1px, transparent 1px)',
+        backgroundSize: '24px 24px',
+        WebkitMaskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
+        maskImage: 'linear-gradient(to bottom, black 0%, transparent 33%)',
       }}
     />
   )
@@ -202,109 +202,79 @@ export default function Home() {
   return (
     <div className="min-h-screen" style={{ background: '#0A0A0A' }}>
 
-      {/* ── Fix 3: Navbar present on ALL states ─────────────────────── */}
       <Navbar
+        variant={appState === 'upload' ? 'full' : 'logo-only'}
         onLogoClick={appState !== 'upload' ? handleReset : undefined}
       />
 
-      {/* ── Sticky visuals header (loading + ready only) ─────────────── */}
-      {(appState === 'loading' || appState === 'ready') && (
-        <div
-          className="sticky z-40"
-          style={{
-            top: 56, // sit just below the fixed navbar
-            background: 'rgba(10,10,10,0.85)',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-          }}
-        >
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3">
-
-            {/* Back button */}
+      {appState === 'ready' && (
+        <div style={{ paddingTop: 60 }}>
+          <div
+            className="visual-subheader"
+            data-no-print
+          >
             <button
               type="button"
               onClick={handleReset}
-              data-no-print
               aria-label="Go back to upload page"
-              className="flex items-center gap-1.5 transition-opacity flex-shrink-0"
+              className="flex items-center"
               style={{
-                color: '#FAFAFA',
-                fontSize: 15,
+                color: '#9CA3AF',
+                fontSize: 14,
                 fontWeight: 500,
-                fontFamily: 'var(--font-sans)',
                 background: 'none',
                 border: 'none',
-                padding: '10px 0',
-                minHeight: 44,
                 cursor: 'pointer',
+                gap: 4,
+                minHeight: 44,
+                transition: 'color 150ms ease',
               }}
-              onMouseEnter={e => (e.currentTarget.style.opacity = '0.7')}
-              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
-              onFocus={e => (e.currentTarget.style.outline = '2px solid #6366F1')}
-              onBlur={e => (e.currentTarget.style.outline = 'none')}
+              onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#9CA3AF')}
             >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M10 13L6 8l4-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <ChevronLeft size={16} aria-hidden="true" />
               Back
             </button>
-
-            {/* Center — filename */}
-            {filename && (
-              <span
-                className="font-mono font-semibold text-center flex-1"
-                style={{
-                  color: '#FAFAFA',
-                  fontSize: 14,
-                  fontFamily: "'JetBrains Mono', monospace",
-                  maxWidth: 'min(60ch, 40vw)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  display: 'block',
-                }}
-                title={filename}
-              >
-                {filename}
-              </span>
-            )}
-
-            {/* Right — Download PDF */}
-            <div className="flex items-center gap-2 flex-shrink-0" data-no-print>
-              {appState === 'ready' && (
-                <button
-                  type="button"
-                  onClick={handleDownload}
-                  disabled={downloading}
-                  aria-label="Download token reference as PDF"
-                  className="flex items-center gap-1.5 font-semibold text-white transition-all disabled:opacity-50"
-                  style={{
-                    background: '#6366F1',
-                    borderRadius: 10,
-                    padding: '12px 20px',
-                    fontSize: 14,
-                    fontFamily: 'var(--font-sans)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    minHeight: 44,
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 0 20px rgba(99,102,241,0.5)')}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-                  onFocus={e => (e.currentTarget.style.outline = '2px solid #6366F1')}
-                  onBlur={e => (e.currentTarget.style.outline = 'none')}
-                >
-                  {downloading ? 'Generating…' : (
-                    <>
-                      <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                        <path d="M6 1v7M3 5l3 3 3-3M1 10h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      Download PDF
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
+            <span
+              style={{
+                color: '#FFFFFF',
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 13,
+                maxWidth: 'min(60ch,35vw)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                display: 'block',
+              }}
+              title={filename}
+            >
+              {filename}
+            </span>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              aria-label="Download PDF"
+              className="flex items-center disabled:opacity-50"
+              style={{
+                background: '#6366F1',
+                color: '#FFFFFF',
+                borderRadius: 10,
+                padding: '8px 18px',
+                fontSize: 13,
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+                gap: 6,
+                minHeight: 44,
+                transition: 'opacity 150ms ease',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.opacity = '0.9')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+            >
+              <Download size={14} aria-hidden="true" />
+              Download PDF
+            </button>
           </div>
         </div>
       )}
@@ -352,13 +322,11 @@ export default function Home() {
               minHeight: 28,
               minWidth: 28,
               borderRadius: 6,
-              transition: 'color 150ms',
+              transition: 'color 150ms ease',
               flexShrink: 0,
             }}
             onMouseEnter={() => setDismissHovered(true)}
             onMouseLeave={() => setDismissHovered(false)}
-            onFocus={e => (e.currentTarget.style.outline = '2px solid #6366F1')}
-            onBlur={e => (e.currentTarget.style.outline = 'none')}
           >
             <X size={14} aria-hidden="true" />
           </button>
@@ -368,7 +336,7 @@ export default function Home() {
       <main>
         {/* ── Upload state ───────────────────────────────────────────── */}
         {appState === 'upload' && (
-          <div style={{ paddingTop: 56 }}>
+          <div style={{ paddingTop: 60 }}>
             <UploadZone onFile={handleFile} onError={handleError} />
 
             {/* Error pills */}
@@ -422,15 +390,14 @@ export default function Home() {
               </div>
             )}
 
-            {/* Fix 5: Footer on upload page */}
             <Footer />
           </div>
         )}
 
         {/* ── Loading state ──────────────────────────────────────────── */}
         {appState === 'loading' && (
-          <div style={{ paddingTop: 56, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }}>
+          <div style={{ paddingTop: 60, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
               <DotGridBg />
               <div
                 style={{
@@ -440,7 +407,7 @@ export default function Home() {
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: 'calc(100vh - 56px)',
+                  minHeight: 'calc(100vh - 60px)',
                   padding: '24px',
                 }}
               >
@@ -465,7 +432,7 @@ export default function Home() {
                   <p
                     key={statusLabel}
                     className="animate-fade-in-up"
-                    style={{ color: '#A1A1AA', fontSize: 14, fontFamily: 'var(--font-sans)', textAlign: 'center', margin: 0 }}
+                    style={{ color: '#9CA3AF', fontSize: 14, fontFamily: 'var(--font-sans)', textAlign: 'center', margin: 0 }}
                   >
                     {statusLabel}
                   </p>
@@ -493,19 +460,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            {/* Fix 5: Footer on loading page */}
-            <Footer />
           </div>
         )}
 
         {/* ── Ready state ────────────────────────────────────────────── */}
         {appState === 'ready' && tokens && (
-          <div style={{ paddingTop: 56, display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <div style={{ position: 'relative', flex: 1, backgroundColor: '#0A0A0A' }} className="animate-fade-in-up">
               <DotGridBg />
               <div id={PDF_ELEMENT_ID} style={{ position: 'relative', zIndex: 1 }}>
-                <div className="mx-auto max-w-7xl px-6 py-10">
-                  <div className="flex flex-col" style={{ gap: 48 }}>
+                <div className="visual-content-shell">
+                  <div className="flex flex-col">
                     <ColorsSection       tokens={tokens.colors}        sectionIndex={idx('colors')} />
                     <TypographySection   tokens={tokens.typography}    sectionIndex={idx('typography')} />
                     <SpacingSection      tokens={tokens.spacing}       sectionIndex={idx('spacing')} />
@@ -516,8 +481,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            {/* Fix 5: Footer on visuals page */}
-            <Footer />
           </div>
         )}
       </main>

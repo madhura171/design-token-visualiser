@@ -44,6 +44,10 @@
   --radius:                 0.75rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme inline {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
@@ -94,11 +98,9 @@
   * {
     @apply border-border outline-ring/50;
   }
-  /* Dot grid lives on the body so nothing can cover it */
+  /* Dot-grid is rendered per-page in dedicated layers */
   body {
     background-color: #0A0A0A;
-    background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
-    background-size: 24px 24px;
     color: #FAFAFA;
   }
 }
@@ -128,28 +130,94 @@
 
 /* ── Section / card reveal animation ────────────────────────────── */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(32px); }
+  from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out both;
+  animation: fadeInUp 400ms ease-out both;
 }
 
-/* Section stagger: 800ms base + index * 300ms */
 .section-reveal {
-  animation: fadeInUp 0.6s ease-out both;
-  animation-delay: calc(800ms + var(--section-index, 0) * 300ms);
+  animation: fadeInUp 400ms ease-out both;
+  animation-delay: calc(var(--section-index, 0) * 100ms);
 }
 
 /* Card stagger: base + section delay + card * 60ms */
 .card-reveal {
-  animation: fadeInUp 0.6s ease-out both;
+  animation: fadeInUp 400ms ease-out both;
   animation-delay: calc(
-    800ms +
-    var(--section-index, 0) * 300ms +
+    var(--section-index, 0) * 100ms +
     var(--card-index, 0) * 60ms
   );
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[role='button']:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 2px;
+}
+
+.upload-hero-shell {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+}
+
+.visual-subheader {
+  height: 52px;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.visual-content-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+@media (min-width: 768px) {
+  .upload-page-title {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 639px) {
+  .how-steps-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .how-step-chevron {
+    display: none;
+  }
+
+  .footer-row {
+    flex-direction: column;
+    align-items: center !important;
+    justify-content: center;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .visual-subheader {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .visual-content-shell {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
 }
 
 /* ── Progress bar ────────────────────────────────────────────────── */
